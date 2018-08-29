@@ -17,26 +17,33 @@ const config = {
     }
 };
 
-const game = new Phaser.Game(config);
+
 let background;
-
-function initHome () {
-
+let userName
+function initHome() {
+    userName = document.getElementById("usr").value;
+    if (userName.toString().length >= 1) {
+        var elem = document.getElementById('cont');
+        elem.style.display = 'none';
+        const game = new Phaser.Game(config);
+    }else {
+        alert("Escriba un nombre");
+    }
 }
 
 function preload() {
-  this.load.image('star', 'assets/sat.png');
-  this.load.image('comet', 'assets/ufo.png');
-  this.load.image('sky', 'assets/sky.png');
-  this.load.image('astro', 'assets/ship.png');
-  this.load.spritesheet('dude','assets/dude4.png', { frameWidth: 37, frameHeight: 56 } );
+    this.load.image('star', 'assets/sat.png');
+    this.load.image('comet', 'assets/ufo.png');
+    this.load.image('sky', 'assets/sky.png');
+    this.load.image('astro', 'assets/ship.png');
+    this.load.spritesheet('dude', 'assets/dude4.png', {frameWidth: 37, frameHeight: 56});
 }
 
 function create() {
     background = this.add.tileSprite(640, 300, 1280, 600, 'sky');
     var self = this;
     this.socket = io();
-
+    this.socket.emit('userCreated', userName);
     this.otherPlayers = this.physics.add.group();
 
     this.socket.on('currentPlayers', function (players) {
@@ -167,28 +174,28 @@ function create() {
 }
 
 function addPlayer(self, playerInfo) {
-  self.player = self.physics.add.sprite(playerInfo.x, playerInfo.y, 'dude');
- 
-  self.player.setGravity(200,-500);
-  if (playerInfo.team === 'blue') {
-    self.player.setTint(0xa54cff);
-  } else {
-   self.player.setTint(0xff664c);
-  }
-  self.player.setDrag(100);
-  self.player.setAngularDrag(100);
-  self.player.setMaxVelocity(200);
+    self.player = self.physics.add.sprite(playerInfo.x, playerInfo.y, 'dude');
+
+    self.player.setGravity(200, -500);
+    if (playerInfo.team === 'blue') {
+        self.player.setTint(0xa54cff);
+    } else {
+        self.player.setTint(0xff664c);
+    }
+    self.player.setDrag(100);
+    self.player.setAngularDrag(100);
+    self.player.setMaxVelocity(200);
 }
 
 function addOtherPlayers(self, playerInfo) {
-  const otherPlayer = self.add.sprite(playerInfo.x, playerInfo.y, 'dude');
-  if (playerInfo.team === 'blue') {
-    otherPlayer.setTint(0x5900d6);
-  } else {
-    otherPlayer.setTint(0xed391a);
-  }
-  otherPlayer.playerId = playerInfo.playerId;
-  self.otherPlayers.add(otherPlayer);
+    const otherPlayer = self.add.sprite(playerInfo.x, playerInfo.y, 'dude');
+    if (playerInfo.team === 'blue') {
+        otherPlayer.setTint(0x5900d6);
+    } else {
+        otherPlayer.setTint(0xed391a);
+    }
+    otherPlayer.playerId = playerInfo.playerId;
+    self.otherPlayers.add(otherPlayer);
 }
 
 function update() {
