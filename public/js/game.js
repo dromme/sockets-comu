@@ -1,8 +1,8 @@
 const config = {
     type: Phaser.AUTO,
     parent: 'phaser-example',
-    width: 1280,
-    height: 600,
+    width: window.innerWidth,
+    height: window.innerHeight,
     physics: {
         default: 'arcade',
         arcade: {
@@ -33,6 +33,8 @@ function initHome() {
     }
 }
 
+
+
 function preload() {
     this.load.image('star', 'assets/sat.png');
     this.load.image('comet', 'assets/ufo.png');
@@ -42,7 +44,7 @@ function preload() {
 }
 
 function create() {
-    background = this.add.tileSprite(640, 300, 1280, 600, 'sky');
+    background = this.add.tileSprite(640, 300, 1600, 1000, 'sky');
     var self = this;
     this.socket = io();
     this.socket.emit('userCreated', userName);
@@ -67,11 +69,6 @@ function create() {
     this.emitter = this.particles.createEmitter({
         x: {min: 1100, max: 0, steps: 500},
         y: {min: 0, max: 600, steps: 300},
-        //angle: { min: 0, max: 360 },
-        // speedX: 10,
-        //   speedY: 40,
-        //quantity: 2 ,
-        //frecuency: 100,
         lifespan: 0,
         rotate: 184,
         //alpha: { start: 100, end: 600 },
@@ -101,6 +98,7 @@ function create() {
 
     ///////////////Desconectado
     this.socket.on('disconnect', function (playerId) {
+        otherUserNameText[playerId].destroy();
         self.otherPlayers.getChildren().forEach(function (otherPlayer) {
             if (playerId === otherPlayer.playerId) {
                 otherPlayer.destroy();
@@ -179,6 +177,7 @@ function create() {
 
 }
 
+
 function addPlayer(self, playerInfo) {
     self.player = self.physics.add.sprite(playerInfo.x, playerInfo.y, 'dude');
     userNameText = self.add.text(playerInfo.x - 27, playerInfo.y - 45, userName, {fontSize: '16px', fill: '#000000'});
@@ -187,7 +186,7 @@ function addPlayer(self, playerInfo) {
     if (playerInfo.team === 'blue') {
         self.player.setTint(0xa54cff);
     } else {
-        self.player.setTint(0xff664c);
+        self.player.setTint(0xb26862);
     }
     self.player.setDrag(100);
     self.player.setAngularDrag(100);
