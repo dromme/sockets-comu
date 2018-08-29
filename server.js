@@ -4,8 +4,9 @@ var server = require('http').Server(app);
 var io = require('socket.io').listen(server);
 
 var players = {};
+
 var star = {
-  x: Math.floor(Math.random() * 700) + 50,
+  x: Math.floor(Math.random() * 700) + 10,
   y: Math.floor(Math.random() * 500) + 50
 };
 

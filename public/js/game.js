@@ -24,6 +24,7 @@ function preload() {
   this.load.image('star', 'assets/sat.png');
   this.load.image('comet', 'assets/falling.png');
   this.load.image('sky', 'assets/sky.png');
+  this.load.image('astro', 'assets/astron.png');
   this.load.spritesheet('dude','assets/dude0.png', { frameWidth: 32, frameHeight: 48 } );
 }
 
@@ -49,20 +50,21 @@ function create() {
     
   });
     
-  this.particles = this.add.particles('comet');
+  this.particles = this.add.particles('star');
   this.emitter = this.particles.createEmitter({
-      x: {min:1280 , max:0 , steps: 700},
-      y: {min:0 , max:600 , steps: 400},
+      x: {min:1100 , max:0 , steps: 500},
+      y: {min:0 , max:600 , steps: 300},
       //angle: { min: 0, max: 360 },
-      speedX: 10,
-      speedY: 40,
-      quantity: 3 ,
-      frecuency: 100,
-      lifespan: 10,
-      alpha: { start: 100, end: 600 },
+     // speedX: 10,
+   //   speedY: 40,
+      //quantity: 2 ,
+     //frecuency: 100,
+      lifespan: 0,
+      rotate: 184,
+      //alpha: { start: 100, end: 600 },
       //scale: { min: 0.21, max: 1 },
-      //rotate: { start: 0, end: 180 },
-      gravityY: -2000,
+      scale: { min: 0.8, max: 1 },
+      //gravityY: -2000,
       on: false
   })
 this.emitter.start();
@@ -76,7 +78,7 @@ this.emitter2 = this.particles.createEmitter({
     quantity: 2 ,
     frecuency: 0,
     lifespan: 5,
-    alpha: { start: 1, end: 600 },
+    //alpha: { start: 1, end: 600 },
     scale: { min: 0.8, max: 1 },
     rotate: 184,
     gravityX: -1000,
@@ -96,13 +98,21 @@ this.emitter2.start();
  this.socket.on('playerMoved', function (playerInfo) {
     self.otherPlayers.getChildren().forEach(function (otherPlayer) {
      if (playerInfo.playerId === otherPlayer.playerId) {
-        otherPlayer.setRotation(playerInfo.rotation);
+       //console.log(JSON.stringify(otherPlayer))
+       // otherPlayer.setRotation(playerInfo.rotation);
+       let diferencia = otherPlayer.x - playerInfo.x;
+       if (diferencia > 2) {
+        otherPlayer.anims.play('left', true);            
+      } else if (diferencia < -2) {
+        otherPlayer.anims.play('right', true);
+      }else{
+        otherPlayer.anims.play('turn', true);
+      }    
         otherPlayer.setPosition(playerInfo.x, playerInfo.y);
       }
     });
   });
-
-  //  Our player animations, turning, walking left and walking right.
+ //  Our player animations, turning, walking left and walking right.
   this.anims.create({
     key: 'left',
     frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
@@ -137,7 +147,7 @@ this.anims.create({
 
   this.socket.on('starLocation', function (starLocation) {
     if (self.star) self.star.destroy();
-    self.star = self.physics.add.image(starLocation.x, starLocation.y, 'star');
+    self.star = self.physics.add.image(starLocation.x, starLocation.y, 'astro');
     self.physics.add.overlap(self.player, self.star, function () {
       this.socket.emit('starCollected');
     }, null, self);
@@ -155,12 +165,12 @@ this.anims.create({
 
 function addPlayer(self, playerInfo) {
   self.player = self.physics.add.sprite(playerInfo.x, playerInfo.y, 'dude');
-  self.player.setBounce(0.3);
-  self.player.setGravity(200,500);
+ 
+  self.player.setGravity(200,-500);
   if (playerInfo.team === 'blue') {
-    //self.player.setTint(0xffffb3);
+    self.player.setTint(0xa8f2f7);
   } else {
-    self.player.setTint(0xffad99);
+   self.player.setTint(0xff664c);
   }
   self.player.setDrag(100);
   self.player.setAngularDrag(100);
@@ -170,9 +180,9 @@ function addPlayer(self, playerInfo) {
 function addOtherPlayers(self, playerInfo) {
   const otherPlayer = self.add.sprite(playerInfo.x, playerInfo.y, 'dude');
   if (playerInfo.team === 'blue') {
-    otherPlayer.setTint(0x0000ff);
+    otherPlayer.setTint(0x42bff4);
   } else {
-    otherPlayer.setTint(0xff0000);
+    otherPlayer.setTint(0xed391a);
   }
   otherPlayer.playerId = playerInfo.playerId;
   self.otherPlayers.add(otherPlayer);
