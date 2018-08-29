@@ -16,8 +16,8 @@ var comet = {
 };
 
 var scores = {
-  blue: 0,
-  red: 0
+  blue: 100,
+  red: 100
 };
 
 app.use(express.static(__dirname + '/public'));
