@@ -25,11 +25,11 @@ function initHome () {
 }
 
 function preload() {
-    this.load.image('star', 'assets/sat.png');
-    this.load.image('comet', 'assets/falling.png');
-    this.load.image('sky', 'assets/sky.png');
-    this.load.image('astro', 'assets/astron.png');
-    this.load.spritesheet('dude', 'assets/dude0.png', {frameWidth: 32, frameHeight: 48});
+  this.load.image('star', 'assets/sat.png');
+  this.load.image('comet', 'assets/ufo.png');
+  this.load.image('sky', 'assets/sky.png');
+  this.load.image('astro', 'assets/ship.png');
+  this.load.spritesheet('dude','assets/dude4.png', { frameWidth: 37, frameHeight: 56 } );
 }
 
 function create() {
@@ -167,28 +167,28 @@ function create() {
 }
 
 function addPlayer(self, playerInfo) {
-    self.player = self.physics.add.sprite(playerInfo.x, playerInfo.y, 'dude');
-
-    self.player.setGravity(200, -500);
-    if (playerInfo.team === 'blue') {
-        self.player.setTint(0xa8f2f7);
-    } else {
-        self.player.setTint(0xff664c);
-    }
-    self.player.setDrag(100);
-    self.player.setAngularDrag(100);
-    self.player.setMaxVelocity(200);
+  self.player = self.physics.add.sprite(playerInfo.x, playerInfo.y, 'dude');
+ 
+  self.player.setGravity(200,-500);
+  if (playerInfo.team === 'blue') {
+    self.player.setTint(0xa54cff);
+  } else {
+   self.player.setTint(0xff664c);
+  }
+  self.player.setDrag(100);
+  self.player.setAngularDrag(100);
+  self.player.setMaxVelocity(200);
 }
 
 function addOtherPlayers(self, playerInfo) {
-    const otherPlayer = self.add.sprite(playerInfo.x, playerInfo.y, 'dude');
-    if (playerInfo.team === 'blue') {
-        otherPlayer.setTint(0x42bff4);
-    } else {
-        otherPlayer.setTint(0xed391a);
-    }
-    otherPlayer.playerId = playerInfo.playerId;
-    self.otherPlayers.add(otherPlayer);
+  const otherPlayer = self.add.sprite(playerInfo.x, playerInfo.y, 'dude');
+  if (playerInfo.team === 'blue') {
+    otherPlayer.setTint(0x5900d6);
+  } else {
+    otherPlayer.setTint(0xed391a);
+  }
+  otherPlayer.playerId = playerInfo.playerId;
+  self.otherPlayers.add(otherPlayer);
 }
 
 function update() {
