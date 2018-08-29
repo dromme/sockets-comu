@@ -19,7 +19,9 @@ const config = {
 
 
 let background;
-let userName
+let userName;
+var userNameText;
+var otherUserNameText = {};
 function initHome() {
     userName = document.getElementById("usr").value;
     if (userName.toString().length >= 1) {
@@ -107,6 +109,10 @@ function create() {
     });
     ////////Rotacion del jugador
     this.socket.on('playerMoved', function (playerInfo) {
+        if (otherUserNameText[playerInfo.playerId] !== undefined) {
+            otherUserNameText[playerInfo.playerId].x = playerInfo.x - 27;
+            otherUserNameText[playerInfo.playerId].y = playerInfo.y - 45;
+        }
         self.otherPlayers.getChildren().forEach(function (otherPlayer) {
             if (playerInfo.playerId === otherPlayer.playerId) {
                 //console.log(JSON.stringify(otherPlayer))
@@ -147,8 +153,8 @@ function create() {
     //Creación cursor
     this.cursors = this.input.keyboard.createCursorKeys();
 
-    this.redScoreText = this.add.text(965, 16, '', {fontSize: '32px', fill: '#000000'});
-    this.blueScoreText = this.add.text(0, 16, '', {fontSize: '32px', fill: '#000000'});
+    this.redScoreText = this.add.text(875, 16, '', {fontSize: '24px', fill: '#ed391a'});
+    this.blueScoreText = this.add.text(120, 16, '', {fontSize: '24px', fill: '#5900d6'});
 
     this.socket.on('scoreUpdate', function (scores, playerInfo) {
         self.blueScoreText.setText('Equipo azul: ' + scores.blue);
@@ -175,6 +181,7 @@ function create() {
 
 function addPlayer(self, playerInfo) {
     self.player = self.physics.add.sprite(playerInfo.x, playerInfo.y, 'dude');
+    userNameText = self.add.text(playerInfo.x - 27, playerInfo.y - 45, userName, {fontSize: '16px', fill: '#000000'});
 
     self.player.setGravity(200, -500);
     if (playerInfo.team === 'blue') {
@@ -188,6 +195,7 @@ function addPlayer(self, playerInfo) {
 }
 
 function addOtherPlayers(self, playerInfo) {
+    otherUserNameText[playerInfo.playerId] = self.add.text(playerInfo.x - 27, playerInfo.y - 45, playerInfo.name, {fontSize: '16px', fill: '#000000'});
     const otherPlayer = self.add.sprite(playerInfo.x, playerInfo.y, 'dude');
     if (playerInfo.team === 'blue') {
         otherPlayer.setTint(0x5900d6);
@@ -235,6 +243,8 @@ function update() {
         var r = this.player.rotation;
         if (this.player.oldPosition && (x !== this.player.oldPosition.x || y !== this.player.oldPosition.y || r !== this.player.oldPosition.rotation)) {
             this.socket.emit('playerMovement', {x: this.player.x, y: this.player.y, rotation: this.player.rotation});
+            userNameText.x = this.player.x - 27;
+            userNameText.y = this.player.y - 45;
         }
         // save old position data
         this.player.oldPosition = {
