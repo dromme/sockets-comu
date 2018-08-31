@@ -1,9 +1,12 @@
 var express = require('express');
+var bodyParser = require('body-parser');
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io').listen(server);
 
 var players = {};
+
+var tasks = [];
 
 var star = {
     x: Math.floor(Math.random() * 1000) + 10,
@@ -21,6 +24,7 @@ var scores = {
 };
 
 app.use(express.static(__dirname + '/public'));
+app.use(bodyParser.json());
 
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/index.html');
@@ -95,4 +99,28 @@ io.on('connection', function (socket) {
 
 server.listen(8080, function () {
     console.log(`Listening on ${server.address().port}`);
+});
+
+app.get('/tasks', function (req, res) {
+    console.log(tasks);
+    res.send(tasks);
+});
+
+app.put('/tasks', function (req, res) {
+    req.body.id = tasks.length
+    tasks.push(req.body);
+    console.log(tasks);
+    res.send("Tarea guardada");
+});
+
+app.delete('/tasks', function (req, res) {
+    delete tasks[req.body.id];
+    console.log(tasks);
+    res.send("Tarea eliminada");
+});
+
+app.post('/tasks', function (req, res) {
+    tasks[req.body.id] = req.body;
+    console.log(tasks);
+    res.send("Tarea actualizada");
 });
