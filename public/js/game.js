@@ -44,7 +44,7 @@ function preload() {
 }
 
 function create() {
-    background = this.add.tileSprite(640, 300, 1600, 1000, 'sky');
+    background = this.add.tileSprite(640, 300, 1600, 1200, 'sky');
     var self = this;
     this.socket = io();
     this.socket.emit('userCreated', userName);

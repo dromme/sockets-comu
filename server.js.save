@@ -6,13 +6,13 @@ var io = require('socket.io').listen(server);
 var players = {};
 
 var star = {
-    x: Math.floor(Math.random() * 1000) + 10,
-    y: Math.floor(Math.random() * 800) + 50
+    x: Math.floor(Math.random() * 700) + 10,
+    y: Math.floor(Math.random() * 500) + 50
 };
 
 var comet = {
     x: Math.floor(Math.random() * 1000) + 20,
-    y: Math.floor(Math.random() * 800) + 20
+    y: Math.floor(Math.random() * 700) + 20
 };
 
 var scores = {
